@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <!-- 手机浏览器优先：锁定视口，避免双指缩放把牌桌挤出屏幕 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1a2a" />
+  <title>鲸鱼牌桌 · 计分下注</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- 全局提示条：错误、通知都用它 -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ==================== 第一屏：创建 / 加入房间 ==================== -->
+  <section id="screen-home" class="screen is-active">
+    <div class="home-wrap">
+      <h1 class="title">鲸鱼牌桌</h1>
+      <p class="subtitle">房主设定积分 · 轮流下注 · 房主判定赢家</p>
+
+      <!-- 玩家身份：名字 + 头像 -->
+      <div class="card">
+        <label class="field-label" for="input-name">你的名字</label>
+        <input id="input-name" class="text-input" type="text" maxlength="8"
+               placeholder="最多 8 个字" autocomplete="off" />
+
+        <div class="field-label">挑一个头像</div>
+        <div id="emoji-picker" class="emoji-picker"></div>
+        <div id="color-picker" class="color-picker"></div>
+
+        <div class="preview-row">
+          <span class="seat-avatar" id="avatar-preview">🐳</span>
+          <span class="preview-name" id="name-preview">未命名</span>
+        </div>
+
+        <button id="btn-create" class="btn btn-primary btn-block">创建房间（我当房主）</button>
+      </div>
+
+      <div class="divider"><span>或者</span></div>
+
+      <div class="card">
+        <label class="field-label" for="input-code">房间号</label>
+        <input id="input-code" class="text-input text-input-code" type="text"
+               inputmode="numeric" maxlength="6" placeholder="4 位数字" autocomplete="off" />
+        <button id="btn-join" class="btn btn-ghost btn-block">加入房间</button>
+      </div>
+
+      <p class="hint">同一局的所有人必须连在同一个服务器（同一个局域网）</p>
+    </div>
+  </section>
+
+  <!-- ==================== 第二屏：大厅（等待开局） ==================== -->
+  <section id="screen-lobby" class="screen">
+    <header class="topbar">
+      <span class="badge" id="lobby-code">房间 ----</span>
+      <span class="badge" id="lobby-count">0 / 8 人</span>
+    </header>
+
+    <div class="lobby-body">
+      <div class="card">
+        <div class="field-label">座位（按加入顺序顺时针排座）</div>
+        <ul id="lobby-list" class="lobby-list"></ul>
+      </div>
+
+      <!-- 只有房主看得到这一块 -->
+      <div class="card" id="host-panel">
+        <label class="field-label" for="input-chips">每人起始积分</label>
+        <input id="input-chips" class="text-input" type="number" min="10" max="100000"
+               step="10" value="100" inputmode="numeric" />
+        <button id="btn-start" class="btn btn-primary btn-block">开始游戏</button>
+      </div>
+
+      <p class="hint" id="lobby-hint">至少 3 人才能开局。把房间号发给朋友。</p>
+    </div>
+  </section>
+
+  <!-- ==================== 第三屏：牌桌 ==================== -->
+  <section id="screen-table" class="screen">
+    <header class="topbar">
+      <span class="badge" id="table-code">房间 ----</span>
+      <span class="badge" id="table-round">第 1 轮</span>
+      <span class="badge badge-soft" id="table-status">等待中</span>
+    </header>
+
+    <!-- 环形牌桌：自己永远在正下方，其他人按顺时针围绕中间公共池 -->
+    <div id="arena" class="arena">
+      <div class="pot">
+        <div class="pot-label">公共池</div>
+        <div class="pot-value" id="pot-value">0</div>
+        <div class="pot-sub" id="pot-sub">最低下注 0</div>
+      </div>
+      <div id="seats" class="seats"></div>
+      <div id="result-layer" class="result-layer hidden"></div>
+    </div>
+
+    <!-- 底部操作区：跟注 / 加注 / 弃牌 / 房主控制 -->
+    <footer class="action-bar" id="action-bar"></footer>
+  </section>
+
+  <script src="game.js"></script>
+</body>
+</html>
